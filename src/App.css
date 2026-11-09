@@ -1,0 +1,183 @@
+/* Layout geral (E5): barra lateral, cabeçalho com indicador de tempo real
+   e área principal. Usa as variáveis de src/index.css. */
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Barra lateral */
+.app-lateral {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg-sidebar);
+  color: var(--text-on-dark);
+  padding: 1.25rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.app-marca {
+  padding: 0 0.5rem;
+}
+
+.app-marca-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.app-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-nav-item {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-on-dark-muted);
+  text-align: left;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.app-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-on-dark);
+}
+
+.app-nav-item.ativo {
+  background: rgba(37, 99, 235, 0.18);
+  border-left-color: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.app-nav-item:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+/* Corpo: cabeçalho + conteúdo */
+.app-corpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 2rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.app-titulo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.app-tempo-real {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.app-tempo-real.conectado {
+  background: var(--success-bg);
+  border-color: transparent;
+  color: #047857;
+}
+
+.app-tempo-real-ponto {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.app-tempo-real.conectado .app-tempo-real-ponto {
+  background: var(--success);
+}
+
+.app-principal {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Telas estreitas: barra lateral vira faixa no topo */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .app-lateral {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+  }
+
+  .app-marca {
+    padding: 0;
+  }
+
+  .app-nav {
+    flex-direction: row;
+  }
+
+  .app-nav-item {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+
+  .app-nav-item.ativo {
+    border-bottom-color: var(--primary);
+  }
+
+  .app-cabecalho,
+  .app-principal {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

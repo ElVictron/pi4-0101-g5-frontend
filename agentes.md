@@ -175,6 +175,20 @@ export function formatarDataHora(valor)
 - Enquanto uma lista carrega: texto `Carregando...`.
 - Formulários: `noValidate`, nome acessível via `aria-label`; botão de envio desabilitado enquanto a requisição está pendente.
 
+**Esclarecimentos do PM (09/11, após os testes do E2)** — valem para todas as telas:
+
+- Erro ao buscar, paginar ou recarregar uma lista: mostra o `role="alert"` e **mantém a lista anterior** (F4).
+- `Carregando...` é texto simples, **sem** `role="status"` (o `status` é só para mensagem de sucesso). O `role="alert"` contém só o texto da mensagem.
+- Tabelas usam `<th>` nos cabeçalhos. Lista vazia: a mensagem de vazio aparece; manter ou não o cabeçalho é livre.
+- O texto `Página X de Y` usa a página pedida (estado local).
+- Navegar antes de qualquer busca enviada: `busca` vai como `''` (a API omite).
+- Campo de busca é enviado como digitado, sem `trim` (a API omite texto só com espaços).
+- Campo `Quantidade de exemplares` é `type="text"` com `inputMode="numeric"`, para que a regra de conversão da 6.6 valha para qualquer texto.
+- Painel: evento de livro fora da lista com `quantidadeDisponivel` 0 não faz nada.
+- Carga inicial das pesquisas: objeto exatamente `{ pagina: 1, tamanho }`, sem a chave `busca`.
+- Textos como `CPF: …`, `Contato: …`, `Devolver até …`, `Devolvido em …` e `Total: N` ficam inteiros num único elemento (sem quebrar em `<strong>` + texto).
+- Alert e status nunca aparecem juntos; ambos somem assim que um novo envio começa.
+
 ### 6.6 `features/livros/CadastroLivro.jsx` (#785, CT1)
 
 `export default function CadastroLivro({ onCadastrado })`
@@ -236,6 +250,7 @@ export function formatarDataHora(valor)
 - Botão `Registrar empréstimo` sempre habilitado (exceto pendente). Envio: `registrarEmprestimo({ usuarioId, livroId })` com `usuarioId` = id do usuário escolhido ou `null`, `livroId` = `Number` do valor escolhido ou `null`.
 - Sucesso: `role="status"` com `Empréstimo registrado. Devolver até ${formatarDataHora(dataLimiteDevolucao)}.`; `onRegistrado(emprestimo)`; seleção de livro volta para `''`; `listarDisponibilidade()` chamado de novo.
 - Erro: `role="alert"`; seleções mantidas; `onRegistrado` não é chamado.
+- Esclarecimentos: o usuário escolhido continua marcado após o sucesso; falha de `listarDisponibilidade` ou de `consultarUsuarios` aparece no mesmo `role="alert"` do formulário; `Nenhum usuário encontrado.` só aparece depois de uma busca.
 
 ### 6.12 `features/emprestimos/ListaEmprestimos.jsx` (#797, #799, CT6, CT8, CT13)
 
@@ -263,6 +278,8 @@ export function useBibliotecaTempoReal({ url = WS_URL, WebSocketImpl, intervaloR
 - `onmessage` → `JSON.parse(data)`; evento válido: objeto com `tipo` em `emprestimo_registrado` ou `devolucao_registrada`, `livroId` inteiro e `quantidadeDisponivel` inteiro ≥ 0. Válido → `evento` recebe um **novo objeto** com os campos da mensagem. Inválido ou JSON ilegível → ignorado, sem exceção.
 - `onclose` → `conectado = false` e nova tentativa após `intervaloReconexaoMs` (`setTimeout`). `onerror` → fecha o socket.
 - Ao desmontar: fecha o socket, cancela a tentativa pendente e não reconecta.
+- `VITE_WS_URL` vazio vale como não definido (usar `||`). Campos `status` e `atualizadaEm` do CT13 não são exigidos na validação.
+- Uma página que monta de novo (troca de aba) faz a carga normal de montagem; o `evento` recebido antes da montagem não dispara recarga extra.
 
 ### 6.14 Páginas e `App.jsx`
 
