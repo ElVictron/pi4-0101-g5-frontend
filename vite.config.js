@@ -9,5 +9,11 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.js"],
     include: ["src/**/*.test.{js,jsx}"],
     css: false,
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{js,jsx}"],
+      exclude: ["src/test/**", "src/main.jsx"],
+      thresholds: { lines: 85, statements: 85, functions: 85, branches: 80 },
+    },
   },
 });
