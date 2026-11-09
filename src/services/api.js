@@ -1,39 +1,144 @@
-// Cliente HTTP configurado para conectar ao Backend 1 (API REST Python / PostgreSQL)
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { MENSAGENS_ERRO } from "./mensagens.js";
 
-async function request(endpoint, options = {}) {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  };
+// Base do Backend 1 (agentes.md F1): sem prefixo /api e sem barra final.
+export const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:8000"
+).replace(/\/+$/, "");
 
-  try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Erro HTTP ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`Falha na requisição API (${endpoint}):`, error);
-    throw error;
+export class ApiError extends Error {
+  constructor({ codigo, mensagem, status }) {
+    super(mensagem);
+    this.name = "ApiError";
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.status = status;
   }
 }
 
-export const api = {
-  // --- Livros ---
-  getBooks: () => request('/books'),
-  createBook: (bookData) => request('/books', { method: 'POST', body: JSON.stringify(bookData) }),
+function vazio(valor) {
+  return (
+    valor === undefined ||
+    valor === null ||
+    (typeof valor === "string" && valor.trim() === "")
+  );
+}
 
-  // --- Usuários / Leitores ---
-  getUsers: () => request('/users'),
-  createUser: (userData) => request('/users', { method: 'POST', body: JSON.stringify(userData) }),
+// Monta a query na ordem dos pares recebidos, omitindo valores vazios.
+function comQuery(caminho, pares) {
+  const params = new URLSearchParams();
+  for (const [nome, valor] of pares) {
+    if (!vazio(valor)) {
+      params.append(nome, String(valor));
+    }
+  }
+  const query = params.toString();
+  return query ? `${caminho}?${query}` : caminho;
+}
 
-  // --- Empréstimos & Devoluções ---
-  getLoans: () => request('/loans'),
-  createLoan: (loanData) => request('/loans', { method: 'POST', body: JSON.stringify(loanData) }),
-  returnLoan: (loanId) => request(`/loans/${loanId}/return`, { method: 'POST' }),
-};
+async function erroHttp(response) {
+  const { status } = response;
+  let corpo;
+  try {
+    corpo = await response.json();
+  } catch {
+    corpo = undefined;
+  }
+  const erro =
+    corpo !== null && typeof corpo === "object" ? corpo.erro : undefined;
+  if (
+    erro !== null &&
+    typeof erro === "object" &&
+    typeof erro.codigo === "string"
+  ) {
+    const mensagem = typeof erro.mensagem === "string" ? erro.mensagem : "";
+    return new ApiError({ codigo: erro.codigo, mensagem, status });
+  }
+  return new ApiError({
+    codigo: status >= 500 ? "ERRO_INTERNO" : "ERRO_INESPERADO",
+    mensagem: `Erro HTTP ${status}`,
+    status,
+  });
+}
+
+async function requisitar(caminho, opcoes) {
+  let response;
+  try {
+    response = await globalThis.fetch(`${API_BASE_URL}${caminho}`, opcoes);
+  } catch {
+    throw new ApiError({
+      codigo: "SEM_CONEXAO",
+      mensagem: MENSAGENS_ERRO.SEM_CONEXAO,
+      status: 0,
+    });
+  }
+  if (!response.ok) {
+    throw await erroHttp(response);
+  }
+  try {
+    return await response.json();
+  } catch {
+    throw new ApiError({
+      codigo: "ERRO_INESPERADO",
+      mensagem: "Resposta inválida do servidor.",
+      status: response.status,
+    });
+  }
+}
+
+function get(caminho, pares) {
+  return requisitar(comQuery(caminho, pares), { method: "GET" });
+}
+
+function post(caminho, dados) {
+  return requisitar(caminho, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dados),
+  });
+}
+
+export async function cadastrarLivro(dados) {
+  return post("/livros", dados);
+}
+
+export async function consultarLivros({ busca, pagina, tamanho } = {}) {
+  return get("/livros", [
+    ["busca", busca],
+    ["pagina", pagina],
+    ["tamanho", tamanho],
+  ]);
+}
+
+export async function listarDisponibilidade({ busca } = {}) {
+  return get("/livros/disponibilidade", [["busca", busca]]);
+}
+
+export async function cadastrarUsuario(dados) {
+  return post("/usuarios", dados);
+}
+
+export async function consultarUsuarios({ busca, pagina, tamanho } = {}) {
+  return get("/usuarios", [
+    ["busca", busca],
+    ["pagina", pagina],
+    ["tamanho", tamanho],
+  ]);
+}
+
+export async function registrarEmprestimo(dados) {
+  return post("/emprestimos", dados);
+}
+
+export async function consultarEmprestimos({ status, busca } = {}) {
+  return get("/emprestimos", [
+    ["status", status],
+    ["busca", busca],
+  ]);
+}
+
+export async function registrarDevolucao(emprestimoId) {
+  return requisitar(
+    `/emprestimos/${encodeURIComponent(emprestimoId)}/devolucao`,
+    { method: "PATCH" },
+  );
+}

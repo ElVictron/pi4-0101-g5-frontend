@@ -117,7 +117,7 @@ Regras:
 - URL = `API_BASE_URL + caminho`.
 - **Sucesso** (`response.ok`): devolve `await response.json()` sem transformar.
 - **Erro HTTP** (`!response.ok`):
-  - corpo `{"erro": {"codigo", "mensagem"}}` → `ApiError({ codigo, mensagem, status })` (mensagem `''` se ausente);
+  - corpo `{"erro": {"codigo", "mensagem"}}` → `ApiError({ codigo, mensagem, status })` (mensagem `''` se ausente) — vale só quando `erro.codigo` é texto; sem `codigo` textual, conta como "outro corpo";
   - outro corpo ou corpo ilegível → `codigo` `'ERRO_INTERNO'` se `status >= 500`, senão `'ERRO_INESPERADO'`; `mensagem` `` `Erro HTTP ${status}` ``.
 - **Falha de rede** (`fetch` rejeita) → `ApiError({ codigo: 'SEM_CONEXAO', mensagem: MENSAGENS_ERRO.SEM_CONEXAO, status: 0 })`.
 - **Sucesso com JSON ilegível** → `ApiError({ codigo: 'ERRO_INESPERADO', mensagem: 'Resposta inválida do servidor.', status })`.

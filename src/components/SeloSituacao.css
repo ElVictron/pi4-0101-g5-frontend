@@ -1,0 +1,25 @@
+.selo {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.selo-ativo {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.selo-atrasado {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.selo-devolvido {
+  background-color: #6b7280;
+  color: #ffffff;
+}
