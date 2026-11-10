@@ -139,25 +139,28 @@ export default function PesquisaUsuarios({ versao = 0, tamanho = 20 }) {
         </>
       )}
 
-      <div className="usuarios-paginacao">
-        <button
-          type="button"
-          className="btn-secondary btn-sm"
-          disabled={pagina <= 1}
-          onClick={() => navegar(-1)}
-        >
-          Anterior
-        </button>
-        <span>{`Página ${pagina} de ${totalPaginas}`}</span>
-        <button
-          type="button"
-          className="btn-secondary btn-sm"
-          disabled={pagina >= totalPaginas}
-          onClick={() => navegar(1)}
-        >
-          Próxima
-        </button>
-      </div>
+      {/* 6.15.2: paginação só depois da primeira resposta com sucesso. */}
+      {carregado && (
+        <div className="usuarios-paginacao">
+          <button
+            type="button"
+            className="btn-secondary btn-sm"
+            disabled={pagina <= 1}
+            onClick={() => navegar(-1)}
+          >
+            Anterior
+          </button>
+          <span>{`Página ${pagina} de ${totalPaginas}`}</span>
+          <button
+            type="button"
+            className="btn-secondary btn-sm"
+            disabled={pagina >= totalPaginas}
+            onClick={() => navegar(1)}
+          >
+            Próxima
+          </button>
+        </div>
+      )}
     </section>
   );
 }

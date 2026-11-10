@@ -119,28 +119,31 @@ export default function PesquisaLivros({ versao = 0, tamanho = 20 }) {
         <p className="livros-vazio">Nenhum livro encontrado.</p>
       )}
 
-      <div className="livros-rodape">
-        <span>{`Total: ${total}`}</span>
-        <div className="livros-paginacao">
-          <button
-            type="button"
-            className="livros-botao-secundario"
-            disabled={pagina <= 1}
-            onClick={() => navegar(-1)}
-          >
-            Anterior
-          </button>
-          <span>{`Página ${pagina} de ${totalPaginas}`}</span>
-          <button
-            type="button"
-            className="livros-botao-secundario"
-            disabled={pagina >= totalPaginas}
-            onClick={() => navegar(1)}
-          >
-            Próxima
-          </button>
+      {/* 6.15.2: total e paginação só depois da primeira resposta com sucesso. */}
+      {carregou && (
+        <div className="livros-rodape">
+          <span>{`Total: ${total}`}</span>
+          <div className="livros-paginacao">
+            <button
+              type="button"
+              className="livros-botao-secundario"
+              disabled={pagina <= 1}
+              onClick={() => navegar(-1)}
+            >
+              Anterior
+            </button>
+            <span>{`Página ${pagina} de ${totalPaginas}`}</span>
+            <button
+              type="button"
+              className="livros-botao-secundario"
+              disabled={pagina >= totalPaginas}
+              onClick={() => navegar(1)}
+            >
+              Próxima
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

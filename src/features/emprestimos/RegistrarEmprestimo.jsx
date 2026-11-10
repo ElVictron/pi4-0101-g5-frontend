@@ -51,6 +51,8 @@ export default function RegistrarEmprestimo({ onRegistrado }) {
 
   async function buscarUsuarios() {
     const numero = ++buscaAtual.current;
+    // 6.15.1: status e alert somem assim que a nova busca começa.
+    setSucesso("");
     setErro("");
     setBuscandoUsuarios(true);
     try {

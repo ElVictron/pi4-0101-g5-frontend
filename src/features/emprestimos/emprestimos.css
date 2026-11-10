@@ -214,22 +214,38 @@
 }
 
 /* Tabela */
+/* Rolagem horizontal só como reserva em telas estreitas. */
 .emprestimos-tabela-envoltorio {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
 }
 
 .emprestimos-tabela {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
+/* Nomes, títulos e datas quebram linha para a tabela caber no cartão. */
 .emprestimos-tabela th,
 .emprestimos-tabela td {
-  padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.5rem;
   text-align: left;
+  vertical-align: middle;
   border-bottom: 1px solid var(--border-color, #e2e8f0);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Situação (selo) e Ação (botão Devolver) não quebram. */
+.emprestimos-tabela th:nth-child(6),
+.emprestimos-tabela td:nth-child(6),
+.emprestimos-tabela th:last-child,
+.emprestimos-tabela td:last-child {
   white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 .emprestimos-tabela th {

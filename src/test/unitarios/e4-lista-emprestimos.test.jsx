@@ -208,4 +208,34 @@ describe("E4 · ListaEmprestimos (unitário)", () => {
     await waitFor(() => expect(consultarEmprestimos).toHaveBeenCalledTimes(2));
     expect(consultarEmprestimos.mock.calls[1]).toEqual([{}]);
   });
+  it("evento após devolução mantém Devolução registrada. (recargas automáticas não apagam o status)", async () => {
+    registrarDevolucao.mockResolvedValue({
+      devolvidoEm: "2026-10-15T16:30:00",
+    });
+    const user = userEvent.setup();
+    const { rerender } = render(<ListaEmprestimos />);
+    await screen.findByText("Lucas");
+    await user.click(
+      screen.getByRole("button", { name: "Devolver empréstimo 1" }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Devolução registrada.",
+    );
+    const evento = {
+      tipo: "devolucao_registrada",
+      livroId: 1,
+      quantidadeDisponivel: 1,
+    };
+    rerender(<ListaEmprestimos evento={evento} />);
+    await waitFor(() => expect(consultarEmprestimos).toHaveBeenCalledTimes(2));
+    rerender(<ListaEmprestimos evento={evento} reconexoes={1} />);
+    rerender(<ListaEmprestimos evento={evento} reconexoes={1} versao={1} />);
+    await waitFor(() => expect(consultarEmprestimos).toHaveBeenCalledTimes(4));
+    await waitFor(() =>
+      expect(screen.queryByText("Carregando...")).not.toBeInTheDocument(),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Devolução registrada.",
+    );
+  });
 });

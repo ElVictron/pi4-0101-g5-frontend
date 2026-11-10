@@ -16,13 +16,16 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  /* Ocupa toda a altura do conteúdo (sem vão branco ao rolar); o conteúdo
+     da barra fica fixo no topo com sticky nos filhos. */
+  align-self: stretch;
+  min-height: 100vh;
 }
 
 .app-marca {
   padding: 0 0.5rem;
+  position: sticky;
+  top: 1.25rem;
 }
 
 .app-marca-icone {
@@ -42,6 +45,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  position: sticky;
+  /* padding da barra (1.25rem) + ícone (2.25rem) + gap (1.5rem) */
+  top: 5rem;
 }
 
 .app-nav-item {
@@ -148,8 +154,7 @@
 
   .app-lateral {
     width: 100%;
-    height: auto;
-    position: static;
+    min-height: 0;
     flex-direction: row;
     align-items: center;
     gap: 0.75rem;
@@ -159,10 +164,12 @@
 
   .app-marca {
     padding: 0;
+    position: static;
   }
 
   .app-nav {
     flex-direction: row;
+    position: static;
   }
 
   .app-nav-item {

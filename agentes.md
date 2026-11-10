@@ -292,6 +292,15 @@ export function useBibliotecaTempoReal({ url = WS_URL, WebSocketImpl, intervaloR
 
 ---
 
+### 6.15 Esclarecimentos do E6 (achados dos Revisores)
+
+1. **Mensagens:** em cada componente, `role="status"` e `role="alert"` somem assim que uma nova requisição **iniciada pelo usuário** começa (busca, troca de aba, paginação, envio, devolução). Recargas automáticas (evento CT13, reconexão, `versao`, recarga de livros após o registro) não apagam a mensagem de sucesso; se falharem, mostram o `role="alert"`.
+2. **Antes da primeira resposta com sucesso** de uma pesquisa paginada (`PesquisaLivros`, `PesquisaUsuarios`), os textos `Total: …` e `Página … de …` e os botões `Anterior`/`Próxima` não aparecem. Depois do primeiro sucesso, valem as regras da 6.7.
+3. **Respostas fora de ordem:** se uma consulta mais nova já foi pedida, a resposta (ou o erro) da anterior é ignorada em todas as listas.
+4. **RegistrarEmprestimo:** Enter no campo `Buscar usuário` faz a busca de usuário (não registra). Uma nova busca que não traz o usuário escolhido desmarca a escolha (`usuarioId` volta a `null`).
+5. **Tempo real:** se `new WebSocketImpl(url)` lançar exceção, `conectado` fica `false` e uma nova tentativa é agendada após `intervaloReconexaoMs` (sem quebrar a tela). Em `StrictMode`, depois de montar, desmontar e montar de novo, só um socket fica aberto.
+6. **Botões de pesquisa** (`Buscar`, `Buscar usuário`, paginação e abas) não precisam ficar desabilitados durante a carga.
+
 ## 7. Entregáveis
 
 | Código | Escopo                                    | Cards                   |
@@ -305,7 +314,10 @@ export function useBibliotecaTempoReal({ url = WS_URL, WebSocketImpl, intervaloR
 
 ## 8. Estado
 
-| Item            | Situação              |
-| --------------- | --------------------- |
-| E0 base técnica | concluído (`6bd0b24`) |
-| E1 a E6         | em andamento          |
+| Item                                         | Situação                                                                                                                                                     |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| E0 base técnica                              | concluído (`6bd0b24`)                                                                                                                                        |
+| E1 a E5                                      | concluídos (`4903944`, `9628b24`, `54cf179`, `b4036a0`, `4dc42a7`)                                                                                           |
+| E6                                           | concluído (reforço da 6.15, README, ajustes de layout)                                                                                                       |
+| Integração real                              | pendente: depende do Backend 2 (CT13)                                                                                                                        |
+| Lacunas de teste anotadas pelo Revisor do E6 | contrato para recarga automática mantendo o status (6.15.1) e respostas fora de ordem em RegistrarEmprestimo/Painel (6.15.3); hoje cobertos só por unitários |

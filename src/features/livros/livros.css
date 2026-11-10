@@ -172,7 +172,10 @@
 }
 
 /* Tabelas */
+/* Rolagem horizontal só como reserva em telas estreitas. */
 .livros-tabela-envoltorio {
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: var(--radius-md, 10px);
@@ -199,6 +202,7 @@
 .livros-tabela td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-color, #e2e8f0);
+  overflow-wrap: anywhere;
   color: var(--text-primary, #0f172a);
 }
 

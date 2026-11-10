@@ -64,6 +64,8 @@ export default function ListaEmprestimos({
   useEffect(() => {
     let ignorar = false;
     setCarregando(true);
+    // Recargas automáticas (evento, reconexoes, versao) não apagam o status
+    // (6.15.1); só o alert antigo some no início.
     setErro("");
     consultarEmprestimos(parametrosDe(pedido))
       .then((resposta) => {
@@ -75,7 +77,7 @@ export default function ListaEmprestimos({
       })
       .catch((falha) => {
         if (ignorar) return;
-        // F4: em erro a lista anterior é mantida.
+        // F4: em erro a lista anterior é mantida. Alert e status nunca juntos.
         setSucesso("");
         setErro(mensagemDeErro(falha));
       })
@@ -87,12 +89,20 @@ export default function ListaEmprestimos({
     };
   }, [pedido, recarga]);
 
+  // 6.15.1: ações do usuário apagam status e alert assim que começam.
+  function limparMensagens() {
+    setSucesso("");
+    setErro("");
+  }
+
   function escolherAba(status) {
+    limparMensagens();
     setPedido((atual) => ({ status, busca: atual.busca }));
   }
 
   function enviar(e) {
     e.preventDefault();
+    limparMensagens();
     setPedido((atual) => ({ status: atual.status, busca: texto }));
   }
 

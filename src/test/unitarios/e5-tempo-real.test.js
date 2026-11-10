@@ -152,4 +152,25 @@ describe("E5 · useBibliotecaTempoReal (unitário)", () => {
     expect(result.current.reconexoes).toBe(1);
     expect(result.current.evento).toEqual(MSG);
   });
+  it("construtor que lança sempre: continua tentando e para ao desmontar", () => {
+    let tentativas = 0;
+    class Quebrado {
+      constructor() {
+        tentativas += 1;
+        throw new Error("falha");
+      }
+    }
+    const { result, unmount } = montar({ WebSocketImpl: Quebrado });
+    expect(result.current.conectado).toBe(false);
+    expect(tentativas).toBe(1);
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+    expect(tentativas).toBe(3);
+    unmount();
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(tentativas).toBe(3);
+  });
 });

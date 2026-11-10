@@ -43,8 +43,18 @@ export function useBibliotecaTempoReal({
 
     function conectar() {
       tentativa = null;
+      if (!ativo) return;
       const Impl = WebSocketImpl ?? globalThis.WebSocket;
-      const ws = new Impl(url);
+      let ws;
+      try {
+        ws = new Impl(url);
+      } catch {
+        // 6.15.5: falha ao criar o socket não quebra a tela; tenta de novo.
+        socket = null;
+        setConectado(false);
+        tentativa = setTimeout(conectar, intervaloReconexaoMs);
+        return;
+      }
       socket = ws;
 
       ws.onopen = () => {
