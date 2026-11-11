@@ -5,7 +5,7 @@ import {
   useBibliotecaTempoReal,
 } from "../../hooks/useBibliotecaTempoReal.js";
 
-const URL_PADRAO = "ws://localhost:8001/ws/biblioteca";
+const URL_PADRAO = "wss://localhost:8443/ws/biblioteca";
 
 class FakeWebSocket {
   static instances = [];
@@ -93,7 +93,7 @@ afterEach(() => {
 
 describe("E5 · useBibliotecaTempoReal · conexão", () => {
   it("WS_URL é VITE_WS_URL ou o padrão", () => {
-    // E5 · tempo real · WS_URL padrão ws://localhost:8001/ws/biblioteca (F9, 6.13)
+    // E5 · tempo real · WS_URL padrão wss://localhost:8443/ws/biblioteca (F9, 6.13)
     const env = import.meta.env.VITE_WS_URL;
     expect(WS_URL).toBe(env ? env : URL_PADRAO);
   });

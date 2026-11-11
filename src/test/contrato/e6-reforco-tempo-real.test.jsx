@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, cleanup } from "@testing-library/react";
 import { useBibliotecaTempoReal } from "../../hooks/useBibliotecaTempoReal.js";
 
-const URL_PADRAO = "ws://localhost:8001/ws/biblioteca";
+const URL_PADRAO = "wss://localhost:8443/ws/biblioteca";
 
 class FakeWebSocket {
   static instances = [];

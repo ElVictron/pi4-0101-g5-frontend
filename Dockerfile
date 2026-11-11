@@ -9,7 +9,7 @@ COPY . .
 
 # As variáveis VITE_* entram no bundle durante o build (não em tempo de execução).
 ARG VITE_API_URL=http://localhost:8000
-ARG VITE_WS_URL=ws://localhost:8001/ws/biblioteca
+ARG VITE_WS_URL=wss://localhost:8443/ws/biblioteca
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_WS_URL=$VITE_WS_URL
 

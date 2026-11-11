@@ -97,7 +97,7 @@ describe("E5 · App (unitário)", () => {
     render(<App />);
     expect(FakeWebSocket.instancias).toHaveLength(1);
     expect(ultima().url).toBe(
-      import.meta.env.VITE_WS_URL || "ws://localhost:8001/ws/biblioteca",
+      import.meta.env.VITE_WS_URL || "wss://localhost:8443/ws/biblioteca",
     );
     await waitFor(() => expect(api.listarDisponibilidade).toHaveBeenCalled());
   });

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 // Canal do Backend 2 (CT13). VITE_WS_URL vazio vale como não definido (F9).
 export const WS_URL =
-  import.meta.env.VITE_WS_URL || "ws://localhost:8001/ws/biblioteca";
+  import.meta.env.VITE_WS_URL || "wss://localhost:8443/ws/biblioteca";
 
 const TIPOS_VALIDOS = ["emprestimo_registrado", "devolucao_registrada"];
 

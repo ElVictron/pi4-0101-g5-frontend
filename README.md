@@ -47,12 +47,12 @@ Copie `.env.example` para `.env` e ajuste se necessário:
 cp .env.example .env
 ```
 
-| Variável       | Padrão                              | Uso                                                         |
-| -------------- | ----------------------------------- | ----------------------------------------------------------- |
-| `VITE_API_URL` | `http://localhost:8000`             | Endereço do Backend 1, **sem** `/api` e sem barra no final. |
-| `VITE_WS_URL`  | `ws://localhost:8001/ws/biblioteca` | Canal WebSocket do Backend 2 (CT13).                        |
+| Variável       | Padrão                               | Uso                                                         |
+| -------------- | ------------------------------------ | ----------------------------------------------------------- |
+| `VITE_API_URL` | `http://localhost:8000`              | Endereço do Backend 1, **sem** `/api` e sem barra no final. |
+| `VITE_WS_URL`  | `wss://localhost:8443/ws/biblioteca` | Canal WebSocket do Backend 2 (CT13).                        |
 
-Se a variável não for definida (ou ficar vazia), vale o padrão. As variáveis `VITE_*` são lidas no momento do build (ou ao iniciar o `npm run dev`).
+O Backend 2 só aceita WSS (porta 8443): o navegador precisa confiar no certificado dele (veja o README do Backend 2). Se a variável não for definida (ou ficar vazia), vale o padrão. As variáveis `VITE_*` são lidas no momento do build (ou ao iniciar o `npm run dev`).
 
 ## Como rodar em desenvolvimento
 
@@ -123,7 +123,7 @@ Como as variáveis `VITE_*` entram no bundle durante o build, informe-as com `--
 ```bash
 docker build -t biblioteca-frontend \
   --build-arg VITE_API_URL=http://localhost:8000 \
-  --build-arg VITE_WS_URL=ws://localhost:8001/ws/biblioteca \
+  --build-arg VITE_WS_URL=wss://localhost:8443/ws/biblioteca \
   .
 
 docker run -p 8080:80 biblioteca-frontend
