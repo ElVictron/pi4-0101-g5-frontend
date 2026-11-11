@@ -17,6 +17,9 @@ export default function PainelDisponibilidade({
   const livrosRef = useRef(livros);
   livrosRef.current = livros;
   const eventoAnterior = useRef(evento);
+  // F12: `atualizadaEm` da última mensagem aplicada, por livro. Um reenvio do
+  // Backend 1 pode trazer um evento antigo depois de um novo; esse é ignorado.
+  const ultimaAtualizacao = useRef(new Map());
 
   // Carga ao montar, quando `reconexoes` muda (F10) e quando `recarga` muda.
   useEffect(() => {
@@ -48,7 +51,12 @@ export default function PainelDisponibilidade({
     eventoAnterior.current = evento;
     if (evento === null || typeof evento !== "object") return;
 
-    const { livroId, quantidadeDisponivel } = evento;
+    const { livroId, quantidadeDisponivel, atualizadaEm } = evento;
+    if (typeof atualizadaEm === "string") {
+      const anterior = ultimaAtualizacao.current.get(livroId);
+      if (anterior !== undefined && atualizadaEm < anterior) return;
+      ultimaAtualizacao.current.set(livroId, atualizadaEm);
+    }
     const naLista = livrosRef.current.some((livro) => livro.id === livroId);
     if (naLista) {
       setLivros((atual) =>
